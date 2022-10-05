@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 export EDITOR="vim"
-export LC_ALL="en_US.UTF-8"
 export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 export HISTSIZE='32768';
 export HISTFILESIZE="${HISTSIZE}";
@@ -15,8 +15,3 @@ export LESS_TERMCAP_se=$'\E[39;49m'
 
 # avoid clearing the screen after quitting a manual page
 export MANPAGER='less -X';
-
-# change default shell on macOS from /bin/sh to /bin/bash
-if [[ $OSTYPE == darwin* ]]; then
-    export SHELL=/bin/bash
-fi

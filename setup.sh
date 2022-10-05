@@ -10,14 +10,15 @@ export PS1=
 
 set -eo pipefail
 
-if [ -e ~/.bashrc ]; then
-    source ~/.bashrc
+if [ -e ~/.zshrc ]; then
+    source ~/.zshrc
 fi
 
 if [ -z $1 ]; then
     printf "${RED}missing required argument${UNSET}\n"
     exit 1
 fi
+
 TASK=$1
 
 set -eou pipefail
@@ -41,7 +42,7 @@ download() {
 
 check_opt_bin_in_path() {
     if ! echo $PATH | grep -q "$HOME/opt/bin"; then
-        printf "${YELLOW}add${UNSET} $HOME/opt/bin ${YELLOW} to \$PATH${UNSET}\n"
+        printf "${YELLOW}add $HOME/opt/bin to \$PATH${UNSET}\n"
     fi
 }
 
@@ -77,13 +78,13 @@ install_env_and_symlink () {
     check_conda_env $ENVNAME
     conda create -y -n $ENVNAME $CONDAPKG
     ln -sf "$CONDA_LOCATION/envs/$ENVNAME/bin/$EXECUTABLE" $HOME/opt/bin/$EXECUTABLE
-    printf "${YELLOW}Installed $HOME/opt/bin/$EXECUTABLE${UNSET}\n"
+    printf "${YELLOW}installed $HOME/opt/bin/$EXECUTABLE${UNSET}\n"
     check_opt_bin_in_path
 }
 
 if [ $TASK == "--apt-install" ]; then
     sudo apt-get update && \
-    sudo apt-get install $(awk '{print $1}' apt-packages.txt | grep -v "^#")
+    sudo apt-get install $(awk '{print $1}' packages.txt | grep -v "^#")
 
 elif [ $TASK == "--install-miniconda" ]; then
     if [[ $OSTYPE == darwin* ]]; then
@@ -100,10 +101,6 @@ elif [ $TASK == "--install-miniconda" ]; then
 
     if [ -e /data/$USER/miniconda3-tmp ]; then
         rm -r /data/$USER/miniconda3-tmp
-    fi
-
-    if [[ $OSTYPE == darwin* ]]; then
-        printf "${YELLOW}move conda initialize from ~/.bash_profile to ~/.bashrc${UNSET}\n"
     fi
 
 elif [ $TASK == "--conda-channels-pytorch" ]; then
@@ -140,7 +137,6 @@ elif [ $TASK == "--neovim-plugins" ]; then
     printf "${YELLOW}open nvim and run :PackerSync${UNSET}\n"
 
 elif [ $TASK == "--install-ripgrep" ]; then
-    mkdir -p /tmp/rg
     RG_VERSION=13.0.0
 
     if [[ $OSTYPE == darwin* ]]; then
@@ -149,6 +145,7 @@ elif [ $TASK == "--install-ripgrep" ]; then
         URL=https://github.com/BurntSushi/ripgrep/releases/download/$RG_VERSION/ripgrep-$RG_VERSION-x86_64-unknown-linux-musl.tar.gz
     fi
 
+    mkdir -p /tmp/rg
     download $URL /tmp/rg/ripgrep.tar.gz
     cd /tmp/rg
     tar -xf ripgrep.tar.gz
@@ -163,11 +160,13 @@ elif [ $TASK == "--install-icdiff" ]; then
 
 elif [ $TASK == "--dotfiles" ]; then
     set -x
+
     if [[ $OSTYPE == darwin* ]]; then
         md5program=md5
     else
         md5program=md5sum
     fi
+
     BACKUP_DIR="$HOME/dotfiles-backup-$(date +%s | $md5program | base64 | head -c 8 | tr [:upper:] [:lower:])"
     cd "$(dirname "${BASH_SOURCE}")";
     rsync --no-perms --backup --backup-dir="$BACKUP_DIR" -avh --files-from=include.file . $HOME
@@ -177,9 +176,10 @@ elif [ $TASK == "--diffs" ]; then
         printf "${RED}icdiff not found; run ./setup.sh --install-icdiff${UNSET}\n"
             exit 1;
         }
-    "$HOME/opt/bin/icdiff --recursive --line-numbers" ~ . | grep -v "Only in $HOME" | sed "s|$cmd||g"
+    rdiff="$HOME/opt/bin/icdiff --recursive --line-numbers"
+    $rdiff ~ . | grep -v "Only in $HOME" | sed "s|$rdiff||g"
 
-elif [ $task == "--vim-diffs" ]; then
+elif [ $TASK == "--vim-diffs" ]; then
     for i in $(git ls-tree -r HEAD --name-only | grep "^\."); do nvim -d $i ~/$i; done
 
 else

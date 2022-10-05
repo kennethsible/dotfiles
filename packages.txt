@@ -6,4 +6,3 @@ iotop
 tmux
 gawk
 git
-texlive
