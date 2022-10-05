@@ -1,0 +1,11 @@
+.aliases
+.bash_profile
+.bash_prompt
+.bashrc
+.config/nvim/
+.dircolors
+.exports
+.functions
+.git-completion.bash
+.path
+.tmux.conf

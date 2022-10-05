@@ -1,0 +1,9 @@
+build-essential
+curl
+wget
+htop
+iotop
+tmux
+gawk
+git
+texlive

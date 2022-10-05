@@ -1,0 +1,11 @@
+pytorch
+tqdm
+numpy
+sympy
+scipy
+matplotlib
+ipython
+notebook
+subword-nmt
+sacremoses
+sacrebleu
