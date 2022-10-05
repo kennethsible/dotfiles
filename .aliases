@@ -6,5 +6,5 @@ alias l='ls -CF'
 alias tmux="tmux -u"
 
 if command -v nvim > /dev/null; then
-    alias vim=nvim
+    alias {vi,vim}=nvim
 fi

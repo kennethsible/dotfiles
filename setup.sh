@@ -60,7 +60,7 @@ check_conda_install() {
         CONDA_LOCATION=$(conda info --base)
 
         # enable "conda activate" without "conda init"
-        eval "$(conda shell.bash hook)"
+        eval "$(conda shell.zsh hook)"
     else
         printf "${RED}cannot find conda installation${UNSET}\n"
         exit 1
@@ -97,7 +97,7 @@ elif [ $TASK == "--install-miniconda" ]; then
     bash miniconda.sh -b -p $MINICONDA_DIR
     rm miniconda.sh
     set +x
-    $MINICONDA_DIR/bin/conda init bash
+    $MINICONDA_DIR/bin/conda init zsh
 
     if [ -e /data/$USER/miniconda3-tmp ]; then
         rm -r /data/$USER/miniconda3-tmp

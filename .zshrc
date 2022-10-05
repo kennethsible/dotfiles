@@ -1,20 +1,18 @@
-[ -r "~/.bash_profile" ] && source ~/.bash_profile
-
-for file in ~/.{aliases, exports}; do
+for file in ~/.{aliases,exports}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
 
-export PS1="\u@\h:\w\\$ "
+[ -z "$PS1" ] && return
+
+export PROMPT='%F{51}%n%f@%T~$'
 
 if [[ $HOSTNAME == *".crc.nd.edu" ]]; then
-    export PS1="\u@\[$(tput sgr0)\]\[\033[38;5;214m\]\h\[$(tput sgr0)\]:\w\\$ "
+    export PROMPT='%F{11}%n%f@%T~$'
 fi
 if [[ $HOSTNAME == *".cse.nd.edu" ]]; then
-    export PS1="\u@\[$(tput sgr0)\]\[\033[38;5;174m\]\h\[$(tput sgr0)\]:\w\\$ "
+    export PROMPT='%F{10}%n%f@%T~$'
 fi
 
 export PATH=$PATH:$HOME/opt/bin
 export PATH=$PATH:$HOME/miniconda3/bin
-
-[ -z "$PS1" ] && return
